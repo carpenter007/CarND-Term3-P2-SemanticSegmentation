@@ -26,7 +26,7 @@ def load_vgg(sess, vgg_path):
     :return: Tuple of Tensors from VGG model (image_input, keep_prob, layer3_out, layer4_out, layer7_out)
     """
 
-    # load the model and weights
+    # load the model and weights of VGG16 which is used as encoder
     vgg_tag = 'vgg16'
     tf.saved_model.loader.load(sess, [vgg_tag], vgg_path)
     graph = sess.graph
@@ -51,8 +51,26 @@ def layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes):
     :param num_classes: Number of classes to classify
     :return: The Tensor for the last layer of output
     """
-    # TODO: Implement function
-    return None
+
+    # use the 1x1 convolutionals, so we don't mind the dimensions
+    layer7_1x1 = tf.layers.conv2d(vgg_layer7_out, num_classes, 1, padding='same')
+    layer4_1x1 = tf.layers.conv2d(vgg_layer4_out, num_classes, 1, padding='same')
+    layer3_1x1 = tf.layers.conv2d(vgg_layer3_out, num_classes, 1, padding='same')
+
+
+    # implement the decoder by upsampling the input to the original image size
+
+    output = tf.layers.conv2d_transpose(layer7_1x1, num_classes, 4, 2, padding='same')
+    # retain the information of VGG encoder pooling layer 4
+    output = tf.add(output, layer4_1x1)
+
+    output = tf.layers.conv2d_transpose(output, num_classes, 4, strides=2, padding='same')
+    # retain the information of VGG encoder pooling layer 3
+    output = tf.add(output, layer3_1x1)
+
+    output = tf.layers.conv2d_transpose(output, num_classes, 16, strides=8, padding='same')
+
+    return output
 tests.test_layers(layers)
 
 
