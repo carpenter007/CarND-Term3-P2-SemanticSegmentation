@@ -83,8 +83,21 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     :param num_classes: Number of classes to classify
     :return: Tuple of (logits, train_op, cross_entropy_loss)
     """
-    # TODO: Implement function
-    return None, None, None
+
+    # reduce dimentions to have only the labels and the pixels
+    logits = tf.reshape(nn_last_layer, (-1, num_classes))
+    labels = tf.reshape(correct_label, (-1, num_classes))
+
+    # compute softmax cross entropy between logits and labels, picking the label with the highest value
+    cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels)
+
+    cross_entropy_loss = tf.reduce_mean(cross_entropy)
+    # use Adam optimizer
+    optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
+
+    training_operation = optimizer.minimize(cross_entropy_loss)
+
+    return logits, training_operation, cross_entropy_loss
 tests.test_optimize(optimize)
 
 
