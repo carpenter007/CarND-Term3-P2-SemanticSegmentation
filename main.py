@@ -116,7 +116,18 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param keep_prob: TF Placeholder for dropout keep probability
     :param learning_rate: TF Placeholder for learning rate
     """
-    # TODO: Implement function
+
+    for epoch in range(epochs):
+        for image, label in get_batches_fn(batch_size):
+            sess.run(train_op, feed_dict={input_image: image, correct_label: label, keep_prob: 0.5, learning_rate: 0.001})
+
+        loss, acc = sess.run([cross_entropy_loss, train_op], feed_dict={input_image: image, correct_label: label,
+                                                                 keep_prob: 1.0, learning_rate: 0.001})
+
+        print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
+              "{:.4f}".format(loss) + ", Training Accuracy= " + \
+              "{:.3f}".format(acc))
+
     pass
 tests.test_train_nn(train_nn)
 
@@ -144,9 +155,26 @@ def run():
         # OPTIONAL: Augment Images for better results
         #  https://datascience.stackexchange.com/questions/5224/how-to-prepare-augment-images-for-neural-network
 
-        # TODO: Build NN using load_vgg, layers, and optimize function
+        # Build NN using load_vgg, layers, and optimize function
 
-        # TODO: Train NN using the train_nn function
+        epochs = 5
+        batch_size = 30
+
+        # TF place holders:
+        correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
+        learning_rate = tf.placeholder(tf.float32, name='learning_rate')
+
+
+        vgg_input, vgg_keep_prob, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, vgg_path)
+        nn_last_layer = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
+        logits, training_operation, cross_entropy_loss = optimize(nn_last_layer, correct_label, learning_rate, num_classes)
+
+        # Train NN using the train_nn function
+        init = tf.global_variables_initializer()
+        sess.run(init)
+
+        train_nn(sess, epochs, batch_size, get_batches_fn, training_operation, cross_entropy_loss, vgg_input,
+                 correct_label, vgg_keep_prob, learning_rate)
 
         # TODO: Save inference data using helper.save_inference_samples
         #  helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
