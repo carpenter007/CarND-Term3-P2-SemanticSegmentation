@@ -91,6 +91,9 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
     # compute softmax cross entropy between logits and labels, picking the label with the highest value
     cross_entropy = tf.nn.softmax_cross_entropy_with_logits(logits=logits, labels=labels)
 
+
+    #correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
+    #accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
     cross_entropy_loss = tf.reduce_mean(cross_entropy)
     # use Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
@@ -125,8 +128,10 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
                                                                  keep_prob: 1.0, learning_rate: 0.001})
 
         print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
-              "{:.4f}".format(loss) + ", Training Accuracy= " + \
-              "{:.3f}".format(acc))
+              "{:.4f}".format(loss))
+        #print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
+        #      "{:.4f}".format(loss) + ", Training Accuracy = " +
+        #          "{:.3f}".format(acc))
 
     pass
 tests.test_train_nn(train_nn)
@@ -157,8 +162,8 @@ def run():
 
         # Build NN using load_vgg, layers, and optimize function
 
-        epochs = 20
-        batch_size = 5
+        epochs = 6
+        batch_size = 20
 
         # TF place holders:
         correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
