@@ -121,7 +121,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
         for image, label in get_batches_fn(batch_size):
             sess.run(train_op, feed_dict={input_image: image, correct_label: label, keep_prob: 0.5, learning_rate: 0.001})
 
-        loss, acc = sess.run([cross_entropy_loss, train_op], feed_dict={input_image: image, correct_label: label,
+        loss, _ = sess.run([cross_entropy_loss, train_op], feed_dict={input_image: image, correct_label: label,
                                                                  keep_prob: 1.0, learning_rate: 0.001})
 
         print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
@@ -176,8 +176,8 @@ def run():
         train_nn(sess, epochs, batch_size, get_batches_fn, training_operation, cross_entropy_loss, vgg_input,
                  correct_label, vgg_keep_prob, learning_rate)
 
-        # TODO: Save inference data using helper.save_inference_samples
-        #  helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, keep_prob, input_image)
+        # Save inference data using helper.save_inference_samples
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
         # OPTIONAL: Apply the trained model to a video
 
