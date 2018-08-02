@@ -119,16 +119,15 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param keep_prob: TF Placeholder for dropout keep probability
     :param learning_rate: TF Placeholder for learning rate
     """
-
+    saver = tf.train.Saver()
     for epoch in range(epochs):
         for image, label in get_batches_fn(batch_size):
              _, loss = sess.run([train_op, cross_entropy_loss], feed_dict={input_image: image, correct_label: label, keep_prob: 0.5, learning_rate: 0.001})
 
         print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
               "{:.4f}".format(loss))
-        #print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
-        #      "{:.4f}".format(loss) + ", Training Accuracy = " +
-        #          "{:.3f}".format(acc))
+        if (epoch + 10) % 1 == 0:  # Save every 10 epochs
+            saver.save(sess, os.path.join('./data', 'cont_epoch_' + str(epoch) + '.ckpt'))
 
     pass
 tests.test_train_nn(train_nn)
