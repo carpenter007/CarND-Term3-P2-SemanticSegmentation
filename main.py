@@ -122,12 +122,12 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
 
     for epoch in range(epochs):
         for image, label in get_batches_fn(batch_size):
-             _, loss = sess.run([train_op, cross_entropy_loss], feed_dict={input_image: image, correct_label: label, keep_prob: 0.5, learning_rate: 0.001})
+             _, loss = sess.run([train_op, cross_entropy_loss], feed_dict={input_image: image, correct_label: label, keep_prob: 0.5, learning_rate: 0.0008})
 
         print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
               "{:.4f}".format(loss))
-        if (epoch + 1) % 10 == 0:  # Save every 10 epochs
-            saver.save(sess, os.path.join('./data', 'cont_epoch_' + str(epoch) + '.ckpt'))
+        if (epoch == 1):  # Save one example epoch
+            saver.save(sess, os.path.join('./data', 'variables_epoch_' + str(epoch) + '.ckpt'))
 
     pass
 #tests.test_train_nn(train_nn)  Added param "saver"
@@ -158,7 +158,7 @@ def run():
 
         # Build NN using load_vgg, layers, and optimize function
 
-        epochs = 100
+        epochs = 3
         batch_size = 4
 
         # TF place holders:
@@ -183,5 +183,32 @@ def run():
         # OPTIONAL: Apply the trained model to a video
 
 
+def save_samples():
+    with tf.Session() as sess:
+
+        num_classes = 2
+        image_shape = (160, 576)
+        data_dir = './data'
+        runs_dir = './runs'
+        tests.test_for_kitti_dataset(data_dir)
+
+        correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
+        learning_rate = tf.placeholder(tf.float32, name='learning_rate')
+
+
+        vgg_input, vgg_keep_prob, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, data_dir)
+        nn_last_layer = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
+        logits, training_operation, cross_entropy_loss = optimize(nn_last_layer, correct_label, learning_rate, num_classes)
+
+        init = tf.global_variables_initializer()
+        sess.run(init)
+
+        new_saver = tf.train.import_meta_graph('./data/variables_epoch_1.ckpt.meta')
+        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
+        # Save inference data using helper.save_inference_samples
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
+
+
+save_samples()
 if __name__ == '__main__':
     run()
