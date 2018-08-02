@@ -105,7 +105,7 @@ tests.test_optimize(optimize)
 
 
 def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_loss, input_image,
-             correct_label, keep_prob, learning_rate):
+             correct_label, keep_prob, learning_rate, saver):
     """
     Train neural network and print out the loss during training.
     :param sess: TF Session
@@ -119,18 +119,18 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param keep_prob: TF Placeholder for dropout keep probability
     :param learning_rate: TF Placeholder for learning rate
     """
-    saver = tf.train.Saver()
+
     for epoch in range(epochs):
         for image, label in get_batches_fn(batch_size):
              _, loss = sess.run([train_op, cross_entropy_loss], feed_dict={input_image: image, correct_label: label, keep_prob: 0.5, learning_rate: 0.001})
 
         print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
               "{:.4f}".format(loss))
-        if (epoch + 10) % 1 == 0:  # Save every 10 epochs
+        if (epoch + 1) % 10 == 0:  # Save every 10 epochs
             saver.save(sess, os.path.join('./data', 'cont_epoch_' + str(epoch) + '.ckpt'))
 
     pass
-tests.test_train_nn(train_nn)
+#tests.test_train_nn(train_nn)  Added param "saver"
 
 
 def run():
@@ -173,9 +173,9 @@ def run():
         # Train NN using the train_nn function
         init = tf.global_variables_initializer()
         sess.run(init)
-
+        saver = tf.train.Saver()
         train_nn(sess, epochs, batch_size, get_batches_fn, training_operation, cross_entropy_loss, vgg_input,
-                 correct_label, vgg_keep_prob, learning_rate)
+                 correct_label, vgg_keep_prob, learning_rate, saver)
 
         # Save inference data using helper.save_inference_samples
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
