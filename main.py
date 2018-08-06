@@ -184,19 +184,24 @@ def run():
 
 
 def save_samples():
+
+    num_classes = 2
+    image_shape = (160, 576)
+    data_dir = './data'
+    runs_dir = './runs'
+    tests.test_for_kitti_dataset(data_dir)
+
     with tf.Session() as sess:
 
-        num_classes = 2
-        image_shape = (160, 576)
-        data_dir = './data'
-        runs_dir = './runs'
-        tests.test_for_kitti_dataset(data_dir)
+
+
+        vgg_path = os.path.join(data_dir, 'vgg')
 
         correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
         learning_rate = tf.placeholder(tf.float32, name='learning_rate')
 
 
-        vgg_input, vgg_keep_prob, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, data_dir)
+        vgg_input, vgg_keep_prob, vgg_layer3_out, vgg_layer4_out, vgg_layer7_out = load_vgg(sess, vgg_path)
         nn_last_layer = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
         logits, training_operation, cross_entropy_loss = optimize(nn_last_layer, correct_label, learning_rate, num_classes)
 
