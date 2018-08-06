@@ -183,6 +183,11 @@ def run():
         # OPTIONAL: Apply the trained model to a video
 
 
+
+if __name__ == '__main__':
+    run()
+
+
 def save_samples():
 
     num_classes = 2
@@ -215,5 +220,3 @@ def save_samples():
 
 
 save_samples()
-if __name__ == '__main__':
-    run()
