@@ -213,55 +213,35 @@ def save_samples():
         init = tf.global_variables_initializer()
         sess.run(init)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_10.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
+        new_saver = tf.train.import_meta_graph('./data/variables_epoch_59.ckpt.meta')
+        new_saver.restore(sess, './data/variables_epoch_59')
         # Save inference data using helper.save_inference_samples
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_20.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
+        new_saver = tf.train.import_meta_graph('./data/variables_epoch_69.ckpt.meta')
+        new_saver.restore(sess, './data/variables_epoch_69')
         # Save inference data using helper.save_inference_samples
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_30.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
+        new_saver = tf.train.import_meta_graph('./data/variables_epoch_79.ckpt.meta')
+        new_saver.restore(sess, './data/variables_epoch_79')
         # Save inference data using helper.save_inference_samples
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_40.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
+        new_saver = tf.train.import_meta_graph('./data/variables_epoch_89.ckpt.meta')
+        new_saver.restore(sess, './data/variables_epoch_89')
         # Save inference data using helper.save_inference_samples
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_50.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
+        new_saver = tf.train.import_meta_graph('./data/variables_epoch_99.ckpt.meta')
+        new_saver.restore(sess, './data/variables_epoch_99')
         # Save inference data using helper.save_inference_samples
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
-
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_60.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
-        # Save inference data using helper.save_inference_samples
-        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
-
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_70.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
-        # Save inference data using helper.save_inference_samples
-        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
-
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_80.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
-        # Save inference data using helper.save_inference_samples
-        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
-
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_90.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
-        # Save inference data using helper.save_inference_samples
-        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
-
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_100.ckpt.meta')
-        new_saver.restore(sess, tf.train.latest_checkpoint('./data/'))
-        # Save inference data using helper.save_inference_samples
-        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
-
 
 save_samples()
+
+
+
+
+
+
