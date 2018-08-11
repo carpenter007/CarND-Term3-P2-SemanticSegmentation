@@ -215,6 +215,9 @@ def save_samples():
         nn_last_layer = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
         logits, training_operation, cross_entropy_loss = optimize(nn_last_layer, correct_label, learning_rate, num_classes)
 
+        init = tf.global_variables_initializer()
+        sess.run(init)
+
         new_saver = tf.train.import_meta_graph('./data/FCN8s.meta')
 
         new_saver.restore(sess, './data/FCN8s-9')
