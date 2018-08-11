@@ -94,7 +94,12 @@ def optimize(nn_last_layer, correct_label, learning_rate, num_classes):
 
     #correct_prediction = tf.equal(tf.argmax(logits, 1), tf.argmax(labels, 1))
     #accuracy_operation = tf.reduce_mean(tf.cast(correct_prediction, tf.float32))
-    cross_entropy_loss = tf.reduce_mean(cross_entropy)
+
+    #The losses are collected in the graph, and need to be added manually to the cost function
+    reg_losses = tf.get_collection(tf.GraphKeys.REGULARIZATION_LOSSES)
+    cross_entropy_loss = tf.reduce_mean(cross_entropy) + REGULARIZE_CONST * sum(reg_losses)
+
+
     # use Adam optimizer
     optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate)
 
