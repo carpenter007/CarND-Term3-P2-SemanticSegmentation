@@ -126,6 +126,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
     :param learning_rate: TF Placeholder for learning rate
     """
 
+    saver.save(sess, os.path.join('./data', 'FCN8s'), write_meta_graph=True)
     for epoch in range(epochs):
         for image, label in get_batches_fn(batch_size):
              _, loss = sess.run([train_op, cross_entropy_loss], feed_dict={input_image: image, correct_label: label, keep_prob: 0.5, learning_rate: 0.0001})
@@ -133,7 +134,7 @@ def train_nn(sess, epochs, batch_size, get_batches_fn, train_op, cross_entropy_l
         print("Epoch " + str(epoch) + ", Minibatch Loss= " + \
               "{:.4f}".format(loss))
         if (epoch + 1) % 10 == 0:  # Save every 10 epochs
-            saver.save(sess, os.path.join('./data', 'variables_epoch_' + str(epoch) + '.ckpt'))
+            saver.save(sess, os.path.join('./data', 'FCN8s'), global_step=epoch, write_meta_graph=False)
 
     pass
 #tests.test_train_nn(train_nn)  Added param "saver"
@@ -164,7 +165,7 @@ def run():
 
         # Build NN using load_vgg, layers, and optimize function
 
-        epochs = 50
+        epochs = 100
         batch_size = 5
 
         # TF place holders:
@@ -179,7 +180,7 @@ def run():
         # Train NN using the train_nn function
         init = tf.global_variables_initializer()
         sess.run(init)
-        saver = tf.train.Saver()
+        saver = tf.train.Saver(max_to_keep=10)
         train_nn(sess, epochs, batch_size, get_batches_fn, training_operation, cross_entropy_loss, vgg_input,
                  correct_label, vgg_keep_prob, learning_rate, saver)
 
@@ -204,8 +205,6 @@ def save_samples():
 
     with tf.Session() as sess:
 
-
-
         vgg_path = os.path.join(data_dir, 'vgg')
 
         correct_label = tf.placeholder(tf.int32, [None, None, None, num_classes], name='correct_label')
@@ -216,33 +215,38 @@ def save_samples():
         nn_last_layer = layers(vgg_layer3_out, vgg_layer4_out, vgg_layer7_out, num_classes)
         logits, training_operation, cross_entropy_loss = optimize(nn_last_layer, correct_label, learning_rate, num_classes)
 
-        init = tf.global_variables_initializer()
-        sess.run(init)
+        new_saver = tf.train.import_meta_graph('./data/FCN8s.meta')
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_59.ckpt.meta')
-        new_saver.restore(sess, './data/variables_epoch_59')
-        # Save inference data using helper.save_inference_samples
+        new_saver.restore(sess, './data/FCN8s-9')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_69.ckpt.meta')
-        new_saver.restore(sess, './data/variables_epoch_69')
-        # Save inference data using helper.save_inference_samples
+        new_saver.restore(sess, './data/FCN8s-19')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_79.ckpt.meta')
-        new_saver.restore(sess, './data/variables_epoch_79')
-        # Save inference data using helper.save_inference_samples
+        new_saver.restore(sess, './data/FCN8s-29')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_89.ckpt.meta')
-        new_saver.restore(sess, './data/variables_epoch_89')
-        # Save inference data using helper.save_inference_samples
+        new_saver.restore(sess, './data/FCN8s-39')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
 
-        new_saver = tf.train.import_meta_graph('./data/variables_epoch_99.ckpt.meta')
-        new_saver.restore(sess, './data/variables_epoch_99')
-        # Save inference data using helper.save_inference_samples
+        new_saver.restore(sess, './data/FCN8s-49')
         helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
+
+        new_saver.restore(sess, './data/FCN8s-59')
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
+
+        new_saver.restore(sess, './data/FCN8s-69')
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
+
+        new_saver.restore(sess, './data/FCN8s-79')
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
+
+        new_saver.restore(sess, './data/FCN8s-89')
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
+
+        new_saver.restore(sess, './data/FCN8s-99')
+        helper.save_inference_samples(runs_dir, data_dir, sess, image_shape, logits, vgg_keep_prob, vgg_input)
+
 
 save_samples()
 
