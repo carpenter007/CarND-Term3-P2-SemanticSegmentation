@@ -6,6 +6,7 @@ import warnings
 from distutils.version import LooseVersion
 import project_tests as tests
 
+REGULARIZE_CONST = 0.01  # Choose an appropriate one.
 
 # Check TensorFlow Version
 assert LooseVersion(tf.__version__) >= LooseVersion('1.0'), 'Please use TensorFlow version 1.0 or newer.  You are using {}'.format(tf.__version__)
